@@ -1,0 +1,40 @@
+name: Create Tag from Main Branch after workflow runs
+
+on:
+  workflow_call:
+    inputs:
+      tag-name: 
+        description: name of which to create the tag
+        required: true
+        type: string
+      main-branch: 
+        description: Name of the main branch used. default to main
+        required: false
+        type: string
+        default: 'main' 
+
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout main branch
+      uses: actions/checkout@v4
+      with: 
+        ref: ${{ inputs.main-branch }}
+    
+    - name: Retrieve tag exists flag
+      uses: mukunku/tag-exists-action@v1.4.0
+      id: checkTag
+      with:
+        tag: ${{ inputs.tag-name }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Verify and create tag if not exists
+      if: ${{ steps.checkTag.outputs.exists == 'false' }}
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        default_bump: false
+        custom_tag:  ${{ inputs.tag-name }}
+        tag_prefix: ""
+        github_token: ${{ secrets.GITHUB_TOKEN }}

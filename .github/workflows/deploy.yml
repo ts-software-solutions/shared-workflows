@@ -1,0 +1,60 @@
+name: Deploy to Dev
+
+on:
+  workflow_call:
+    secrets:
+      MULE_DEV_CRYPTO_KEY: 
+        required: true
+      MULE_CLIENT_ID: 
+        required: true
+      MULE_CLIENT_SECRET: 
+        required: true
+    inputs:
+      mule-env: 
+        description: The MuleSoft environment that the deployment will be deployed to
+        required: true
+        type: string
+      release-branch: 
+        description: The Release Branch Name that will be created when a deploy to staging environment is done
+        required: true
+        type: string
+        
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    # Create Release branch if environment is UAT and branch is not a release branch
+    if: ${{ inputs.mule-env == 'UAT' && !contains( GITHUB.ref_name, 'release-' ) }}
+    environment: ${{ inputs.mule-env }}
+    steps:
+    
+    - uses: peterjgrainger/action-create-branch@v2.2.0
+      name: Create Release Branch if doesn't exist 
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        branch: ${{ inputs.release-branch }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.mule-env }}
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: app-artifacts
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        cache: maven
+    
+    - name: Get Jar Full File Name
+      run: |
+        echo "FILE_PATH=$(ls ./target/*.jar)" >> $GITHUB_OUTPUT
+      id: file_name
+
+    # - name: Deploy To specified environment
+    #   run: mvn mule:deploy -e -P ${{ inputs.mule-env }} -Dmule.key=${{ secrets.MULE_DEV_CRYPTO_KEY }} -DartifactPath=${{ steps.file_name.outputs.FILE_PATH }} -DconnectedAppClientId=${{ secrets.MULE_CLIENT_ID }} -DconnectedAppClientSecret=${{ secrets.MULE_CLIENT_SECRET }}
+
+    - name: you did it 
+      run: echo "You Deployed! Trust me"

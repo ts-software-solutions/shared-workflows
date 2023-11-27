@@ -1,0 +1,79 @@
+name: After Prod Deployment Tasks
+
+on:
+  workflow_call:
+    secrets:
+      GH_PAT: 
+        required: true
+    inputs:
+      release-branch: 
+        description: The name of the release branch to delete
+        required: true
+        type: string
+      main-branch: 
+        description: Name of the main branch used. default to main
+        required: false
+        type: string
+        default: 'main'
+      develop-branch: 
+        description: Name of the develop branch used. default to develop
+        required: false
+        type: string
+        default: 'develop'
+
+
+jobs:
+  
+  merge-release:
+    runs-on: ubuntu-latest
+    if: ${{ GITHUB.ref_name != inputs.main-branch }}
+    steps:
+    
+    - name: Checkout release branch
+      uses: actions/checkout@v4
+      with: 
+        ref: ${{ inputs.release-branch }}
+    
+    - name: Merge release -> develop
+      uses: everlytic/branch-merge@1.1.2
+      with:
+        github_token: ${{ secrets.GH_PAT }}
+        source_ref: ${{ format('{0}/{1}', 'refs/heads', inputs.release-branch) }}
+        target_branch: ${{ inputs.develop-branch }}
+        commit_message_template: 'Merge release branch into dev branch [skip ci]'
+    
+    - name: Merge release -> main
+      uses: everlytic/branch-merge@1.1.2
+      with:
+        github_token: ${{ secrets.GH_PAT }}
+        source_ref: ${{ format('{0}/{1}', 'refs/heads', inputs.release-branch) }}
+        target_branch: ${{ inputs.main-branch }}
+        commit_message_template: 'Merge release branch into main branch [skip ci]'
+
+  delete-release-branch:
+    runs-on: ubuntu-latest
+    if: ${{ GITHUB.REF_NAME != inputs.main-branch }}
+    needs: merge-release
+    steps:
+    - name: Delete branch
+      uses: dawidd6/action-delete-branch@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branches: ${{ inputs.release-branch }}
+  
+  merge-main-into-dev:
+    runs-on: ubuntu-latest
+    if: ${{ GITHUB.ref_name == inputs.main-branch }}
+    steps:
+    - name: Checkout main branch
+      uses: actions/checkout@v4
+      with: 
+        ref: ${{ inputs.main-branch }}
+    
+    - name: Merge main -> develop
+      uses: everlytic/branch-merge@1.1.2
+      with:
+        github_token: ${{ secrets.GH_PAT }}
+        source_ref: ${{ format('{0}/{1}', 'refs/heads', inputs.main-branch) }}
+        target_branch: ${{ inputs.develop-branch }}
+        commit_message_template: 'Merge hotfix implementation into develop and start new pipeline after hotfix'

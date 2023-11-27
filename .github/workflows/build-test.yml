@@ -1,0 +1,138 @@
+name: Test and build Jar File 
+
+on:
+  workflow_call:
+    secrets:
+      MULE_DEV_CRYPTO_KEY: 
+        required: true
+      MULE_EE_REPO_USERNAME: 
+        required: true
+      MULE_EE_REPO_PASSWORD: 
+        required: true
+      MULE_CLIENT_ID: 
+        required: true
+      MULE_CLIENT_SECRET: 
+        required: true
+    inputs:
+      build-test: 
+        description: Specify whether you would like to build the jar file or just run unit tests
+        required: false
+        type: string
+        default: 'test'
+    outputs:
+      short-sha: 
+        description: Short Sha used for revision and release branch name
+        value: ${{ jobs.build-and-publish.outputs.short-sha }}
+      release-branch:
+        description: Branch name to be used for eventual deploy to production
+        value: ${{ jobs.build-and-publish.outputs.release-branch }}
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    outputs:
+      short-sha: ${{ steps.sha.outputs.SHA_SHORT }} 
+      release-branch: ${{ steps.release-branch.outputs.BRANCH_NAME }}    
+    steps:
+    # Checkout current branch
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ GITHUB.ref }}
+    
+    # Setup java and maven settings
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        cache: maven
+    - name: Configure Maven settings
+      uses: whelk-io/maven-settings-xml-action@v21
+      with:
+        servers: >
+          [
+            {
+              "id": "anypoint-exchange-v3",
+              "username": "~~~Client~~~",
+              "password": "${{ secrets.MULE_CLIENT_ID }}~?~${{ secrets.MULE_CLIENT_SECRET }}"
+            },
+            {
+              "id": "avio-mulesoft-ee-releases",
+              "username": "${{ secrets.MULE_EE_REPO_USERNAME }}",
+              "password": "${{ secrets.MULE_EE_REPO_PASSWORD }}"
+            }
+          ]
+        mirrors: >
+          [
+            {
+              "id": "avio-mulesoft-ee-releases",
+              "name": "avio-mulesoft-ee-releases",
+              "mirrorOf": "MuleRepository",
+              "url": "https://devops.avioconsulting.com/nexus/repository/mulesoft-ee-releases/"
+            }
+          ]
+        repositories: >
+          [
+            { 
+              "id": "MuleRepository", 
+              "name": "MuleRepository", 
+              "url": "https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/", 
+              "releases": { 
+                "enabled": "true" 
+              }, 
+              "snapshots": { 
+                "enabled": "true" 
+              } 
+            }
+          ]
+        active_profiles: >
+          [
+            "github"
+          ]
+        output_file: .m2/settings.xml
+
+    
+    #### *** If inputs.build-test == 'test' *** ####  
+    # Run MUnit Tests
+    - name: Run Unit Tests
+      if: ${{ inputs.build-test == 'test' }}
+      run: mvn clean test -e -U -s ./.m2/settings.xml -Dmule.env=DEV -Dmule.key=${{ secrets.MULE_DEV_CRYPTO_KEY }}
+
+    #### *** If inputs.build-test == 'build' *** ####
+    #### This is conditionally settings sha and release-branch variables if current branch is release branch or not ###
+    #### IF current branch is not a release- branch ###
+    # Get current github sha value short version for use in version number
+    #### IF current branch is a release- branch ###
+    # Set sha to current release branch sha
+    - name: Get short commit sha for revision
+      if: ${{ inputs.build-test == 'build' }}
+      id: sha
+      run: |
+        CURR_BRANCH=${{ GITHUB.ref_name }}
+        if [[ $CURR_BRANCH =~ "release-" ]]; then echo "SHA_SHORT=${CURR_BRANCH##*-}" >> $GITHUB_OUTPUT; else echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT; fi
+        echo $SHA_SHORT
+
+    # Set branch name to be used for eventual release
+    - name: Set Release Branch Name
+      if: ${{ inputs.build-test == 'build' }} 
+      id: release-branch
+      run: |
+        CURR_BRANCH=${{ GITHUB.ref_name }}
+        if [[ $CURR_BRANCH =~ "release-" ]]; then echo "BRANCH_NAME=${{ GITHUB.ref_name }}" >> $GITHUB_OUTPUT; else echo "BRANCH_NAME=release-${{ steps.sha.outputs.SHA_SHORT }}" >> $GITHUB_OUTPUT; fi
+        echo $BRANCH_NAME
+
+    
+
+    # Build Jar File 
+    - name: Build Jar
+      if: ${{ inputs.build-test == 'build' }}
+      run: mvn clean package -e -U -s ./.m2/settings.xml -Dmule.env=DEV -Dmule.key=${{ secrets.MULE_DEV_CRYPTO_KEY }} -Drevision=${{ steps.sha.outputs.SHA_SHORT }}
+    
+    - name: Upload Jar and Pom.xml
+      if: ${{ inputs.build-test == 'build' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-artifacts
+        path: |
+          target/*.jar
+          pom.xml
