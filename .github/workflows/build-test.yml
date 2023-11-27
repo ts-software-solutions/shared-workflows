@@ -98,6 +98,20 @@ jobs:
       if: ${{ inputs.build-test == 'test' }}
       run: mvn clean test -e -U -s ./.m2/settings.xml -Dmule.env=DEV -Dmule.key=${{ secrets.MULE_DEV_CRYPTO_KEY }}
 
+    - name: |
+        Ensure all branches are within convention. Branches should be prefixed by feature, fix, or hotfix followed by '/'
+        branches should include the user that completed the work's github username in all lowercase followed by '/'
+        Finally a short description of the work done in snake case
+        ex: feature/tannersherman/add-new-field-to-addresses
+      if: ${{ inputs.build-test == 'test' }}
+      uses: deepakputhraya/action-branch-name@master
+      with:
+        regex: '(feature|fix|hotfix)\/([a-z]{1,15})\/([a-z0-9-]{1,50})|release\-[a-zA-Z0-9]{7}' # Regex the branch should match. This example enforces grouping
+        allowed_prefixes: '' # All branches should start with the given prefix
+        ignore: main,develop # Ignore exactly matching branch names from convention
+        min_length: 5 # Min length of the branch name
+        max_length: 100 # Max length of the branch name
+
     #### *** If inputs.build-test == 'build' *** ####
     #### This is conditionally settings sha and release-branch variables if current branch is release branch or not ###
     #### IF current branch is not a release- branch ###
