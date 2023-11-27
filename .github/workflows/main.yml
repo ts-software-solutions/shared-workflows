@@ -6,12 +6,12 @@ on:
 jobs:
   Run-Tests:
     if: ${{ GITHUB.event_name == 'pull_request' }}
-    uses: ts-software-solutions/shared-workflows/.github/workflows/build-test.yml@develop
+    uses: ts-software-solutions/shared-workflows/.github/workflows/build-test.yml@main
     secrets: inherit
 
   Build-And-Publish:
     if: ${{ GITHUB.event_name != 'pull_request' }}
-    uses: ts-software-solutions/shared-workflows/.github/workflows/build-test.yml@develop
+    uses: ts-software-solutions/shared-workflows/.github/workflows/build-test.yml@main
     secrets: inherit
     with:
       build-test: 'build'
@@ -19,7 +19,7 @@ jobs:
   Deploy-to-DEV:
     if: ${{ GITHUB.event_name != 'pull_request' && GITHUB.ref_name != 'main'}}
     needs: [Build-And-Publish]
-    uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@develop
+    uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@main
     secrets: inherit
     with: 
       mule-env: 'DEV'
@@ -28,7 +28,7 @@ jobs:
   Deploy-to-UAT:
     if: ${{ GITHUB.event_name != 'pull_request' && GITHUB.ref_name != 'main'}}
     needs: [Build-And-Publish]
-    uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@develop
+    uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@main
     secrets: inherit
     with: 
       mule-env: 'UAT'
@@ -37,7 +37,7 @@ jobs:
   Deploy-to-PROD:
     if: ${{ GITHUB.event_name != 'pull_request' }}
     needs: [Build-And-Publish]
-    uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@develop
+    uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@main
     secrets: inherit
     with: 
       mule-env: 'PROD'
@@ -46,7 +46,7 @@ jobs:
   Branch-Cleanup:
     if: ${{ GITHUB.event_name != 'pull_request' }}
     needs: [Build-And-Publish, Deploy-to-PROD]
-    uses: ts-software-solutions/shared-workflows/.github/workflows/branch-cleanup.yml@develop
+    uses: ts-software-solutions/shared-workflows/.github/workflows/branch-cleanup.yml@main
     secrets: inherit 
     with:
       release-branch: ${{ needs.Build-And-Publish.outputs.release-branch }}
@@ -54,7 +54,7 @@ jobs:
   Create-Tag:
     if: ${{ GITHUB.event_name != 'pull_request' }}
     needs: [Build-And-Publish, Deploy-to-PROD, Branch-Cleanup]
-    uses: ts-software-solutions/shared-workflows/.github/workflows/create-tag.yml@develop
+    uses: ts-software-solutions/shared-workflows/.github/workflows/create-tag.yml@main
     secrets: inherit 
     with:
       tag-name: ${{ needs.Build-And-Publish.outputs.short-sha }}
