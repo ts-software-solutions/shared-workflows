@@ -32,6 +32,8 @@ jobs:
       with:
         ref: 'develop'
         token: ${{ secrets.GH_PAT }}
+        fetch-depth: 0
+    
     - name: Create release branch and ammend last commit to include [skip ci]
       run: |
         git config --global user.name "Github Actions Bot"
@@ -39,6 +41,8 @@ jobs:
         git --version
         git checkout develop
         git pull
+        OLD_MSG=$(git log --format=%B -n1)
+        git commit --amend -m"$OLD_MSG" -m" [skip ci] " 
         git checkout -b ${{ inputs.release-branch }}
         git push -u origin ${{ inputs.release-branch }}
 
