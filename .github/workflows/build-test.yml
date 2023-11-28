@@ -13,6 +13,8 @@ on:
         required: true
       MULE_CLIENT_SECRET: 
         required: true
+      GH_PAT: 
+        required: true
     inputs:
       build-test: 
         description: Specify whether you would like to build the jar file or just run unit tests
