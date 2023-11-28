@@ -35,7 +35,7 @@ jobs:
       release-branch: ${{ needs.Build-And-Publish.outputs.release-branch }}
   
   Deploy-to-PROD:
-    if: ${{ GITHUB.event_name != 'pull_request' && always() && needs.Build-And-Publish.result == 'success' }}
+    if: ${{ GITHUB.event_name != 'pull_request' && !cancelled() && needs.Build-And-Publish.result == 'success' }}
     needs: [Build-And-Publish, Deploy-to-Dev, Deploy-to-UAT]
     uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@main
     secrets: inherit
@@ -44,7 +44,7 @@ jobs:
       release-branch: ${{ needs.Build-And-Publish.outputs.release-branch }}
 
   Branch-Cleanup:
-    if: ${{ GITHUB.event_name != 'pull_request' && always() && needs.Build-And-Publish.result == 'success' }}
+    if: ${{ GITHUB.event_name != 'pull_request' && !cancelled() && needs.Build-And-Publish.result == 'success' }}
     needs: [Build-And-Publish, Deploy-to-PROD]
     uses: ts-software-solutions/shared-workflows/.github/workflows/branch-cleanup.yml@main
     secrets: inherit 
@@ -52,7 +52,7 @@ jobs:
       release-branch: ${{ needs.Build-And-Publish.outputs.release-branch }}
 
   Create-Tag:
-    if: ${{ GITHUB.event_name != 'pull_request' && always() && needs.Build-And-Publish.result == 'success' }}
+    if: ${{ GITHUB.event_name != 'pull_request' && !cancelled() && needs.Build-And-Publish.result == 'success' }}
     needs: [Build-And-Publish, Deploy-to-PROD, Branch-Cleanup]
     uses: ts-software-solutions/shared-workflows/.github/workflows/create-tag.yml@main
     secrets: inherit 
