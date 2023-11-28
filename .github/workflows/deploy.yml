@@ -41,6 +41,8 @@ jobs:
         token: ${{ secrets.GH_PAT }}
     - name: Create release branch and ammend last commit to include [skip ci]
       run: |
+        git config --global user.name "Github Actions Bot"
+        git config --global user.email "<>"
         git --version
         git pull
         git checkout -b ${{ inputs.release-branch }}
