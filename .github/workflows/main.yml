@@ -35,7 +35,7 @@ jobs:
       release-branch: ${{ needs.Build-And-Publish.outputs.release-branch }}
   
   Deploy-to-PROD:
-    if: ${{ GITHUB.event_name != 'pull_request' && always() && needs.*.result == 'success' }}
+    if: ${{ GITHUB.event_name != 'pull_request' && always() && needs.Deploy-to-Dev.result == 'success' && needs.Deploy-to-UAT.result == 'success' }}
     needs: [Build-And-Publish, Deploy-to-Dev, Deploy-to-UAT]
     uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@main
     secrets: inherit
