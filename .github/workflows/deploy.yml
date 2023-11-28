@@ -30,7 +30,7 @@ jobs:
     - uses: peterjgrainger/action-create-branch@v2.2.0
       name: Create Release Branch if doesn't exist 
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
       with:
         branch: ${{ inputs.release-branch }}
 
