@@ -17,11 +17,8 @@ on:
       build-test: 
         description: Specify whether you would like to build the jar file or just run unit tests
         required: false
-        type: choice
+        type: string
         default: 'test'
-        options:
-        - test
-        - build   
     outputs:
       short-sha: 
         description: Short Sha used for revision and release branch name
