@@ -27,12 +27,28 @@ jobs:
     environment: ${{ inputs.mule-env }}
     steps:
     
-    - uses: peterjgrainger/action-create-branch@v2.2.0
-      name: Create Release Branch if doesn't exist 
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+    # - uses: peterjgrainger/action-create-branch@v2.2.0
+    #   name: Create Release Branch if doesn't exist 
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+    #   with:
+    #     branch: ${{ inputs.release-branch }}
+
+    - name: Create Release Branch
+      uses: actions/checkout@v3
       with:
-        branch: ${{ inputs.release-branch }}
+        ref: 'develop'
+    - name: git
+      run: |
+        # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+        git --version
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
+        git remote set-url origin https://${{ secrets.GH_PAT }}@github.com/ts-software-solutions/${{ ${{ github.event.repository.name }} }}.git/
+        git pull
+        git checkout -b ${{ inputs.release-branch }}
+        git commit -m 'Created release branch from develop [skip ci]'
+        git push -u origin ${{ inputs.release-branch }}
 
   deploy:
     runs-on: ubuntu-latest
