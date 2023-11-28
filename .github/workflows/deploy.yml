@@ -26,15 +26,8 @@ jobs:
     if: ${{ inputs.mule-env == 'UAT' && !contains( GITHUB.ref_name, 'release-' ) }}
     environment: ${{ inputs.mule-env }}
     steps:
-    
-    # - uses: peterjgrainger/action-create-branch@v2.2.0
-    #   name: Create Release Branch if doesn't exist 
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-    #   with:
-    #     branch: ${{ inputs.release-branch }}
 
-    - name: Create Release Branch
+    - name: Checkout Current Develop Branch
       uses: actions/checkout@v3
       with:
         ref: 'develop'
