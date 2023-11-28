@@ -33,6 +33,7 @@ jobs:
       uses: actions/checkout@v4
       with: 
         ref: ${{ inputs.release-branch }}
+        token: ${{ secrets.GH_PAT }}
     
     - name: Merge release -> develop
       uses: everlytic/branch-merge@1.1.2
@@ -69,6 +70,7 @@ jobs:
       uses: actions/checkout@v4
       with: 
         ref: ${{ inputs.main-branch }}
+        token: ${{ secrets.GH_PAT }}
     
     - name: Merge main -> develop
       uses: everlytic/branch-merge@1.1.2

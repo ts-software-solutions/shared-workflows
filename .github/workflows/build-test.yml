@@ -35,9 +35,10 @@ jobs:
       release-branch: ${{ steps.release-branch.outputs.BRANCH_NAME }}    
     steps:
     # Checkout current branch
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ GITHUB.ref }}
+        token: ${{ secrets.GH_PAT }}
     
     # Setup java and maven settings
     - name: Set up JDK 8
