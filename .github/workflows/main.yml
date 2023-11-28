@@ -23,6 +23,7 @@ jobs:
     secrets: inherit
     with: 
       mule-env: 'DEV'
+      short-sha: ${{ needs.Build-And-Publish.outputs.short-sha }}
       release-branch: ${{ needs.Build-And-Publish.outputs.release-branch }}
   
   Deploy-to-UAT:
@@ -32,6 +33,7 @@ jobs:
     secrets: inherit
     with: 
       mule-env: 'UAT'
+      short-sha: ${{ needs.Build-And-Publish.outputs.short-sha }}
       release-branch: ${{ needs.Build-And-Publish.outputs.release-branch }}
   
   Deploy-to-PROD:
@@ -41,6 +43,7 @@ jobs:
     secrets: inherit
     with: 
       mule-env: 'PROD'
+      short-sha: ${{ needs.Build-And-Publish.outputs.short-sha }}
       release-branch: ${{ needs.Build-And-Publish.outputs.release-branch }}
 
   Branch-Cleanup:

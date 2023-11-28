@@ -20,6 +20,11 @@ on:
         description: The Release Branch Name that will be created when a deploy to staging environment is done
         required: true
         type: string
+      short-sha:
+        description: The short sha for the commit that initiated this workflow. This will be used to create the release branch
+        required: true
+        type: string
+
         
 jobs:
   create-release:
@@ -43,6 +48,7 @@ jobs:
         git --version
         git checkout develop
         git pull
+        git checkout ${{ inputs.short-sha }}
         OLD_MSG=$(git log --format=%B -n1)
         git commit --amend -m"$OLD_MSG" -m" [skip ci] " 
         git checkout -b ${{ inputs.release-branch }}
