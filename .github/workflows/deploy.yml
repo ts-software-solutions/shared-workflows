@@ -3,7 +3,7 @@ name: Deploy to Dev
 on:
   workflow_call:
     secrets:
-      MULE_DEV_CRYPTO_KEY: 
+      CRYPTO_KEY: 
         required: true
       MULE_CLIENT_ID: 
         required: true
@@ -72,8 +72,5 @@ jobs:
         echo "FILE_PATH=$(ls ./target/*.jar)" >> $GITHUB_OUTPUT
       id: file_name
 
-    # - name: Deploy To specified environment
-    #   run: mvn mule:deploy -e -P ${{ inputs.mule-env }} -Dmule.key=${{ secrets.MULE_DEV_CRYPTO_KEY }} -DartifactPath=${{ steps.file_name.outputs.FILE_PATH }} -DconnectedAppClientId=${{ secrets.MULE_CLIENT_ID }} -DconnectedAppClientSecret=${{ secrets.MULE_CLIENT_SECRET }}
-
-    - name: you did it 
-      run: echo "You Deployed! Trust me"
+    - name: Deploy To specified environment based on profile
+      run: mvn mule:deploy -e -P ${{ inputs.mule-env }} -Dmule.key=${{ secrets.CRYPTO_KEY }} -DartifactPath=${{ steps.file_name.outputs.FILE_PATH }} -DconnectedAppClientId=${{ secrets.MULE_CLIENT_ID }} -DconnectedAppClientSecret=${{ secrets.MULE_CLIENT_SECRET }}

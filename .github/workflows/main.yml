@@ -20,7 +20,11 @@ jobs:
     if: ${{ GITHUB.event_name != 'pull_request' && GITHUB.ref_name != 'main'}}
     needs: [Build-And-Publish]
     uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@main
-    secrets: inherit
+    secrets:
+      CRYPTO_KEY: ${{ secrets.MULE_DEV_CRYPTO_KEY }} 
+      MULE_CLIENT_ID: ${{ secrets.MULE_CLIENT_ID }} 
+      MULE_CLIENT_SECRET: ${{ secrets.MULE_CLIENT_SECRET }} 
+      GH_PAT: ${{ secrets.GH_PAT }} 
     with: 
       mule-env: 'DEV'
       short-sha: ${{ needs.Build-And-Publish.outputs.short-sha }}
@@ -30,7 +34,11 @@ jobs:
     if: ${{ GITHUB.event_name != 'pull_request' && GITHUB.ref_name != 'main'}}
     needs: [Build-And-Publish, Deploy-to-Dev]
     uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@main
-    secrets: inherit
+    secrets: 
+      CRYPTO_KEY: ${{ secrets.MULE_DEV_CRYPTO_KEY }} 
+      MULE_CLIENT_ID: ${{ secrets.MULE_CLIENT_ID }} 
+      MULE_CLIENT_SECRET: ${{ secrets.MULE_CLIENT_SECRET }} 
+      GH_PAT: ${{ secrets.GH_PAT }} 
     with: 
       mule-env: 'UAT'
       short-sha: ${{ needs.Build-And-Publish.outputs.short-sha }}
@@ -40,7 +48,11 @@ jobs:
     if: ${{ GITHUB.event_name != 'pull_request' && !cancelled() && needs.Build-And-Publish.result == 'success' }}
     needs: [Build-And-Publish, Deploy-to-Dev, Deploy-to-UAT]
     uses: ts-software-solutions/shared-workflows/.github/workflows/deploy.yml@main
-    secrets: inherit
+    secrets: 
+      CRYPTO_KEY: ${{ secrets.MULE_PROD_CRYPTO_KEY }} 
+      MULE_CLIENT_ID: ${{ secrets.MULE_CLIENT_ID }} 
+      MULE_CLIENT_SECRET: ${{ secrets.MULE_CLIENT_SECRET }} 
+      GH_PAT: ${{ secrets.GH_PAT }} 
     with: 
       mule-env: 'PROD'
       short-sha: ${{ needs.Build-And-Publish.outputs.short-sha }}
