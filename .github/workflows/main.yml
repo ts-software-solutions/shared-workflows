@@ -24,6 +24,8 @@ jobs:
       CRYPTO_KEY: ${{ secrets.MULE_DEV_CRYPTO_KEY }} 
       MULE_CLIENT_ID: ${{ secrets.MULE_CLIENT_ID }} 
       MULE_CLIENT_SECRET: ${{ secrets.MULE_CLIENT_SECRET }} 
+      ANYPOINT_CLIENT_ID: ${{ secrets.ANYPOINT_CLIENT_ID }} 
+      ANYPOINT_CLIENT_SECRET: ${{ secrets.ANYPOINT_CLIENT_SECRET }} 
       GH_PAT: ${{ secrets.GH_PAT }} 
     with: 
       mule-env: 'DEV'
@@ -38,6 +40,8 @@ jobs:
       CRYPTO_KEY: ${{ secrets.MULE_DEV_CRYPTO_KEY }} 
       MULE_CLIENT_ID: ${{ secrets.MULE_CLIENT_ID }} 
       MULE_CLIENT_SECRET: ${{ secrets.MULE_CLIENT_SECRET }} 
+      ANYPOINT_CLIENT_ID: ${{ secrets.ANYPOINT_CLIENT_ID }} 
+      ANYPOINT_CLIENT_SECRET: ${{ secrets.ANYPOINT_CLIENT_SECRET }} 
       GH_PAT: ${{ secrets.GH_PAT }} 
     with: 
       mule-env: 'UAT'
@@ -52,6 +56,8 @@ jobs:
       CRYPTO_KEY: ${{ secrets.MULE_PROD_CRYPTO_KEY }} 
       MULE_CLIENT_ID: ${{ secrets.MULE_CLIENT_ID }} 
       MULE_CLIENT_SECRET: ${{ secrets.MULE_CLIENT_SECRET }} 
+      ANYPOINT_CLIENT_ID: ${{ secrets.ANYPOINT_CLIENT_ID }} 
+      ANYPOINT_CLIENT_SECRET: ${{ secrets.ANYPOINT_CLIENT_SECRET }} 
       GH_PAT: ${{ secrets.GH_PAT }} 
     with: 
       mule-env: 'PROD'

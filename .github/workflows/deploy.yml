@@ -9,6 +9,10 @@ on:
         required: true
       MULE_CLIENT_SECRET: 
         required: true
+      ANYPOINT_CLIENT_ID: 
+        required: true
+      ANYPOINT_CLIENT_SECRET: 
+        required: true
       GH_PAT: 
         required: true
     inputs:
@@ -73,4 +77,11 @@ jobs:
       id: file_name
 
     - name: Deploy To specified environment based on profile
-      run: mvn mule:deploy -e -P ${{ inputs.mule-env }} -Dmule.key=${{ secrets.CRYPTO_KEY }} -DartifactPath=${{ steps.file_name.outputs.FILE_PATH }} -DconnectedAppClientId=${{ secrets.MULE_CLIENT_ID }} -DconnectedAppClientSecret=${{ secrets.MULE_CLIENT_SECRET }}
+      run: |
+        mvn mule:deploy -e -P ${{ inputs.mule-env }} \
+        -Dmule.key=${{ secrets.CRYPTO_KEY }} \
+        -DartifactPath=${{ steps.file_name.outputs.FILE_PATH }} \
+        -DconnectedAppClientId=${{ secrets.MULE_CLIENT_ID }} \
+        -DconnectedAppClientSecret=${{ secrets.MULE_CLIENT_SECRET }} \
+        -DanypointPlatformClientId=${{ secrets.ANYPOINT_CLIENT_ID }} \
+        -DanypointPlatformClientSecret=${{ secrets.ANYPOINT_CLIENT_SECRET }} 
