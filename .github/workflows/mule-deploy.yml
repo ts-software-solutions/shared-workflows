@@ -36,6 +36,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+    environment: ${{ inputs.mule-env }}
 
     - name: if tag-name is an empty string, it should be 'early-access'
       id: set-tag-name
