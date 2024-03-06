@@ -92,4 +92,4 @@ jobs:
         -DmuleDeploy.cryptoKey=${{ secrets.CRYPTO_KEY }} \
         -DmuleDeploy.autoDiscClientId=${{ secrets.ANYPOINT_CLIENT_ID }} \
         -DmuleDeploy.autoDiscClientSecret=${{ secrets.ANYPOINT_CLIENT_SECRET }} \
-        -Danypoint.org.name=${{ inputs.anypoint-org-name }}
+        "-Danypoint.org.name=${{ inputs.anypoint-org-name }}"
