@@ -16,7 +16,7 @@ on:
       GH_PAT: 
         required: true
     inputs:
-      anypoint_org_name:
+      anypoint-org-name:
         description: Organization name that is the target of the deployment
         required: true
         type: string
@@ -90,4 +90,4 @@ jobs:
         -DmuleDeploy.cryptoKey=${{ secrets.CRYPTO_KEY }} \
         -DmuleDeploy.autoDiscClientId=${{ secrets.ANYPOINT_CLIENT_ID }} \
         -DmuleDeploy.autoDiscClientSecret=${{ secrets.ANYPOINT_CLIENT_SECRET }} \
-        -Danypoint.org.name=${{ inputs.anypoint_org_name }}
+        -Danypoint.org.name=${{ inputs.anypoint-org-name }}

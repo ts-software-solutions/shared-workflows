@@ -3,7 +3,7 @@ name: Main Orchestration To deploy and manage a pipeline deploying to MuleSoft
 on:
   workflow_call:
     inputs:
-      anypoint_org_name:
+      anypoint-org-name:
         description: Organization name that is the target of the deployment
         required: true
         type: string
@@ -52,7 +52,7 @@ jobs:
     with:
       tag-name: ${{ inputs.tag }} 
       mule-env: ${{ inputs.dev-env }}
-      anypoint_org_name: ${{ inputs.anypoint_org_name }}
+      anypoint-org-name: ${{ inputs.anypoint-org-name }}
   
   Deploy-To-UAT:
     if: ${{ !cancelled() && !failure() && GITHUB.ref_name == 'main' && !inputs.deploy-directly-to-prod }}
@@ -68,7 +68,7 @@ jobs:
     with:
       tag-name: ${{ inputs.tag }} 
       mule-env: ${{ inputs.uat-env }}
-      anypoint_org_name: ${{ inputs.anypoint_org_name }}
+      anypoint-org-name: ${{ inputs.anypoint-org-name }}
 
   Deploy-To-Prod:
     if: ${{ !cancelled() && !failure() && GITHUB.ref_name == 'main' }}
@@ -84,7 +84,7 @@ jobs:
     with:
       tag-name: ${{ inputs.tag }} 
       mule-env: ${{ inputs.prod-env }}
-      anypoint_org_name: ${{ inputs.anypoint_org_name }}
+      anypoint-org-name: ${{ inputs.anypoint-org-name }}
 
   Create-Release:
     if: ${{ !cancelled() &&  !failure() && GITHUB.ref_name == 'main' && GITHUB.event_name == 'push' && needs.Build-And-Publish.result == 'success' && needs.Deploy-to-PROD.result == 'success' }}
