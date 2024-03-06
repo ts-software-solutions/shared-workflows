@@ -111,8 +111,8 @@ jobs:
       if: ${{ !inputs.test-only }}
       id: version
       run: |
-        PATCH=$(date +'%d%m%y')
-        PATCH+=${{ github.run_number }}
+        PATCH=${{ github.run_number }}
+        PATCH+=$(date +'%d%m%y')
         echo VERSION_OUTPUT=1.0.$PATCH >> $GITHUB_OUTPUT
     
     - name: Set Pom version to generated version
