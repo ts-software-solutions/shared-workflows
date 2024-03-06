@@ -45,9 +45,11 @@ jobs:
         if [[ $INPUT_TAG_NAME == "" ]]; then echo "TAG_NAME=early-access" >> $GITHUB_OUTPUT; else echo "TAG_NAME=$INPUT_TAG_NAME" >> $GITHUB_OUTPUT; fi
         echo $TAG_NAME
 
-    - name: Print the tag name to be deployed
+    - name: Print tag name and input parameters
       run: |
         echo The tag to be deployed is ${{ steps.set-tag-name.outputs.TAG_NAME }}
+        echo The Environment that is being deployed to is ${{ inputs.mule-env }}
+        echo The Anypoint Org Name is  ${{ inputs.anypoint-org-name }}
 
     - name: Get Files from early-access release and extract zip file
       uses: robinraju/release-downloader@v1.8
