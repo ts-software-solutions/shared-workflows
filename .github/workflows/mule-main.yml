@@ -23,6 +23,11 @@ on:
         description: The tag name used in the build stage so the release assets can be fetched
         required: true
         type: string
+      mule-deploy-args:
+        description: Additional arguments that should be provided during deployment using the mule deploy library from AVIO
+        required: false
+        type: string
+        default: '' 
 jobs:
   Run-Tests:
     if: ${{ (GITHUB.ref_name != 'main' && GITHUB.event_name == 'push') || (GITHUB.event_name == 'pull_request')}}
@@ -49,6 +54,7 @@ jobs:
       tag-name: ${{ inputs.tag }} 
       mule-env: ${{ inputs.dev-env }}
       anypoint-org-name: ${{ inputs.anypoint-org-name }}
+      mule-deploy-args: ${{ inputs.mule-deploy-args }}
   
   Deploy-To-UAT:
     if: ${{ !cancelled() && !failure() && GITHUB.ref_name == 'main' && !inputs.deploy-directly-to-prod }}
@@ -59,6 +65,7 @@ jobs:
       tag-name: ${{ inputs.tag }} 
       mule-env: ${{ inputs.uat-env }}
       anypoint-org-name: ${{ inputs.anypoint-org-name }}
+      mule-deploy-args: ${{ inputs.mule-deploy-args }}
 
   Deploy-To-Prod:
     if: ${{ !cancelled() && !failure() && GITHUB.ref_name == 'main' }}
@@ -69,6 +76,7 @@ jobs:
       tag-name: ${{ inputs.tag }} 
       mule-env: ${{ inputs.prod-env }}
       anypoint-org-name: ${{ inputs.anypoint-org-name }}
+      mule-deploy-args: ${{ inputs.mule-deploy-args }}
 
   Create-Release:
     if: ${{ !cancelled() &&  !failure() && GITHUB.ref_name == 'main' && GITHUB.event_name == 'push' && needs.Build-And-Publish.result == 'success' && needs.Deploy-to-PROD.result == 'success' }}
