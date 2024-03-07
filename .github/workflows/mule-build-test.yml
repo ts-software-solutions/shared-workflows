@@ -100,7 +100,7 @@ jobs:
       if: ${{ inputs.test-only }}
       uses: deepakputhraya/action-branch-name@master
       with:
-        regex: '(feature|fix|hotfix)\/([a-z]{1,15})\/([a-z0-9-]{1,30})|release\-[a-zA-Z0-9]{7}'
+        regex: '(feature|fix|hotfix)\/([a-z]{1,15})\/([a-z0-9-]{1,30})'
         allowed_prefixes: ''
         ignore: main
         min_length: 5
