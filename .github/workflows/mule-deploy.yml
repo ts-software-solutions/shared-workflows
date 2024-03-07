@@ -95,5 +95,5 @@ jobs:
         -DmuleDeploy.autoDiscClientSecret=${{ secrets.ANYPOINT_CLIENT_SECRET }} \
         "-DmuleDeploy.workerType=Small" \
         "-DmuleDeploy.workerCount=1" \
-        "-DmuleDeploy.region=us-west-2" \
+        "-DmuleDeploy.region=UsWest2" \
         "-Danypoint.org.name=${{ inputs.anypoint-org-name }}"
