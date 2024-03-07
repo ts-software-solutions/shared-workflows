@@ -3,7 +3,7 @@ name: Deploy workflow
 on:
   workflow_call:
     secrets:
-      CRYPTO_KEY: 
+      MULE_CRYPTO_KEY: 
         required: true
       MULE_CLIENT_ID: 
         required: true
@@ -90,10 +90,10 @@ jobs:
         -DmuleDeploy.appArtifact=${{ steps.get_paths.outputs.JAR_FILE }} \
         -Danypoint.connected-app.id=${{ secrets.MULE_CLIENT_ID }} \
         -Danypoint.connected-app.secret=${{ secrets.MULE_CLIENT_SECRET }} \
-        -DmuleDeploy.cryptoKey=${{ secrets.CRYPTO_KEY }} \
+        -DmuleDeploy.cryptoKey=${{ secrets.MULE_CRYPTO_KEY }} \
         -DmuleDeploy.autoDiscClientId=${{ secrets.ANYPOINT_CLIENT_ID }} \
         -DmuleDeploy.autoDiscClientSecret=${{ secrets.ANYPOINT_CLIENT_SECRET }} \
-        "-DmuleDeploy.workerType=Micro" \
-        "-DmuleDeploy.workerCount=1" \
-        "-DmuleDeploy.region=UsWest2" \
+        "-DmuleDeploy.workerType=${{ vars.WORKER_SIZE }}" \
+        "-DmuleDeploy.workerCount=${{ vars.WORKER_COUNT }}" \
+        "-DmuleDeploy.region=${{ vars.REGION }}" \
         "-Danypoint.org.name=${{ inputs.anypoint-org-name }}"

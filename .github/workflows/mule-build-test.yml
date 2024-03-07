@@ -3,7 +3,7 @@ name: Test and build Jar File
 on:
   workflow_call:
     secrets:
-      MULE_DEV_CRYPTO_KEY: 
+      MULE_CRYPTO_KEY: 
         required: true
       MULE_EE_REPO_USERNAME: 
         required: true
@@ -21,6 +21,11 @@ on:
         required: false
         type: boolean
         default: true
+      mule-env: 
+        description: |
+          The MuleSoft environment that the deployment will be deployed to. Default is the current early-access release
+        required: true
+        type: string
     outputs:
       released-version: 
         description: The Version number that was released
@@ -31,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       released-version: ${{ steps.version.outputs.VERSION_OUTPUT }} 
+    environment: ${{ inputs.mule-env }}
     steps:
 
     - name: checkout current branch
@@ -90,7 +96,10 @@ jobs:
 
     - name: Run Unit Tests
       if: ${{ inputs.test-only }}
-      run: mvn clean test -e -U -s ./.m2/settings.xml -Denv=dev -Dcrypto.key=${{ secrets.MULE_DEV_CRYPTO_KEY }}
+      run: |
+        mvn clean test -e -U -s ./.m2/settings.xml \
+        -Denv=dev \
+        -Dcrypto.key=${{ secrets.MULE_CRYPTO_KEY }}
 
     - name: |
         Ensure all branches are within convention. Branches should be prefixed by feature, fix, or hotfix followed by '/'
@@ -127,11 +136,11 @@ jobs:
         mvn clean package \
         -e -U -s ./.m2/settings.xml \
         -Denv=dev \
-        -Dcrypto.key=${{ secrets.MULE_DEV_CRYPTO_KEY }} \
+        -Dcrypto.key=${{ secrets.MULE_CRYPTO_KEY }} \
         -DmuleDeploy.appArtifact=./target/mule-sample-project-${{ steps.version.outputs.VERSION_OUTPUT }}-mule-application.jar \
-        "-DmuleDeploy.workerType=Micro" \
-        "-DmuleDeploy.workerCount=1" \
-        "-DmuleDeploy.region=UsWest2"
+        "-DmuleDeploy.workerType=${{ vars.WORKER_SIZE }}" \
+        "-DmuleDeploy.workerCount=${{ vars.WORKER_COUNT }}" \
+        "-DmuleDeploy.region=${{ vars.REGION }}""
 
     - name: Get Jar File Path
       if: ${{ !inputs.test-only }}
