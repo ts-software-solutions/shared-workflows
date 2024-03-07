@@ -93,7 +93,7 @@ jobs:
         -DmuleDeploy.cryptoKey=${{ secrets.CRYPTO_KEY }} \
         -DmuleDeploy.autoDiscClientId=${{ secrets.ANYPOINT_CLIENT_ID }} \
         -DmuleDeploy.autoDiscClientSecret=${{ secrets.ANYPOINT_CLIENT_SECRET }} \
-        "-DmuleDeploy.workerType=Small" \
+        "-DmuleDeploy.workerType=Micro" \
         "-DmuleDeploy.workerCount=1" \
         "-DmuleDeploy.region=UsWest2" \
         "-Danypoint.org.name=${{ inputs.anypoint-org-name }}"

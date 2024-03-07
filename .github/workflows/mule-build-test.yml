@@ -129,7 +129,7 @@ jobs:
         -Denv=dev \
         -Dcrypto.key=${{ secrets.MULE_DEV_CRYPTO_KEY }} \
         -DmuleDeploy.appArtifact=./target/mule-sample-project-${{ steps.version.outputs.VERSION_OUTPUT }}-mule-application.jar \
-        "-DmuleDeploy.workerType=Small" \
+        "-DmuleDeploy.workerType=Micro" \
         "-DmuleDeploy.workerCount=1" \
         "-DmuleDeploy.region=UsWest2"
 
