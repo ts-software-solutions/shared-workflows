@@ -140,7 +140,7 @@ jobs:
         -DmuleDeploy.appArtifact=./target/mule-sample-project-${{ steps.version.outputs.VERSION_OUTPUT }}-mule-application.jar \
         "-DmuleDeploy.workerType=${{ vars.WORKER_SIZE }}" \
         "-DmuleDeploy.workerCount=${{ vars.WORKER_COUNT }}" \
-        "-DmuleDeploy.region=${{ vars.REGION }}""
+        "-DmuleDeploy.region=${{ vars.REGION }}"
 
     - name: Get Jar File Path
       if: ${{ !inputs.test-only }}
