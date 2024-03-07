@@ -128,7 +128,10 @@ jobs:
         -e -U -s ./.m2/settings.xml \
         -Denv=dev \
         -Dcrypto.key=${{ secrets.MULE_DEV_CRYPTO_KEY }} \
-        -DmuleDeploy.appArtifact=./target/mule-sample-project-${{ steps.version.outputs.VERSION_OUTPUT }}-mule-application.jar
+        -DmuleDeploy.appArtifact=./target/mule-sample-project-${{ steps.version.outputs.VERSION_OUTPUT }}-mule-application.jar \
+        "-DmuleDeploy.workerType=SMALL" \
+        "-DmuleDeploy.workerCount=1" \
+        "-DmuleDeploy.region=us-west-2"
 
     - name: Get Jar File Path
       if: ${{ !inputs.test-only }}
