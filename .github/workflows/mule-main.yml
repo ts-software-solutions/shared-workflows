@@ -44,6 +44,7 @@ jobs:
     with:
       test-only: false
       mule-env: ${{ inputs.dev-env }} 
+      mule-deploy-args: ${{ inputs.mule-deploy-args }}
 
   Deploy-To-Dev:
     if: ${{ !cancelled() && !failure() &&  GITHUB.ref_name == 'main' && !inputs.deploy-directly-to-prod }}
