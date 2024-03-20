@@ -45,7 +45,7 @@ jobs:
         zipBall: false
         out-file-path: "release_assets"
         extract: false
-        token: ${{ secrets.GH_PAT }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Move Jar to target directory for jreleaser
       id: get_paths
@@ -64,7 +64,7 @@ jobs:
       uses: jreleaser/release-action@v2
       env:
         JRELEASER_PROJECT_VERSION: ${{ inputs.version-to-release }}
-        JRELEASER_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         setup-java: false
         version: 1.6.0
