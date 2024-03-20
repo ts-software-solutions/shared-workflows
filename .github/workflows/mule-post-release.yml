@@ -2,9 +2,6 @@ name: Create official tag and Release
 
 on:
   workflow_call:
-    secrets:
-      GH_PAT: 
-        required: true
     inputs:
       early-access-tag-name: 
         description: Name of the early release tag name

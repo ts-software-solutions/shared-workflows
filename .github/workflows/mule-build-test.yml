@@ -13,8 +13,6 @@ on:
         required: true
       MULE_CLIENT_SECRET: 
         required: true
-      # GH_PAT: 
-      #   required: true
     inputs:
       test-only: 
         description: Select true if you only want to run tests. False will run tests, build, and publish a snapshot release
