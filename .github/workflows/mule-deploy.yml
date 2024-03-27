@@ -64,6 +64,10 @@ jobs:
         zipBall: true
         extract: true
         token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - uses: actions/download-artifact@v4
+      with:
+        name: mule-deploy
 
     - name: Get paths to source code and jar and list directory contents
       id: get_paths
@@ -100,5 +104,5 @@ jobs:
         "-DmuleDeploy.workerCount=${{ vars.WORKER_COUNT }}" \
         "-DmuleDeploy.region=${{ vars.REGION }}" \
         "-Danypoint.org.name=${{ inputs.anypoint-org-name }}" \
-        ${{ inputs.mule-deploy-args }}
+        $(cat tmp.txt)
 
