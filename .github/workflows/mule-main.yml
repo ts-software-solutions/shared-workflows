@@ -57,37 +57,27 @@ jobs:
       anypoint-org-name: ${{ inputs.anypoint-org-name }}
       mule-deploy-args: ${{ inputs.mule-deploy-args }}
   
-  # Deploy-To-UAT:
-  #   if: ${{ !cancelled() && !failure() && GITHUB.ref_name == 'main' && !inputs.deploy-directly-to-prod }}
-  #   uses: ts-software-solutions/shared-workflows/.github/workflows/mule-deploy.yml@main
-  #   needs: [Deploy-To-Dev]
-  #   secrets: inherit
-  #   with:
-  #     tag-name: ${{ inputs.tag }} 
-  #     mule-env: ${{ inputs.uat-env }}
-  #     anypoint-org-name: ${{ inputs.anypoint-org-name }}
-  #     mule-deploy-args: ${{ inputs.mule-deploy-args }}
+  Deploy-To-UAT:
+    if: ${{ !cancelled() && !failure() && GITHUB.ref_name == 'main' && !inputs.deploy-directly-to-prod }}
+    uses: ts-software-solutions/shared-workflows/.github/workflows/mule-deploy.yml@main
+    needs: [Deploy-To-Dev]
+    secrets: inherit
+    with:
+      tag-name: ${{ inputs.tag }} 
+      mule-env: ${{ inputs.uat-env }}
+      anypoint-org-name: ${{ inputs.anypoint-org-name }}
+      mule-deploy-args: ${{ inputs.mule-deploy-args }}
 
-  # Deploy-To-Prod:
-  #   if: ${{ !cancelled() && !failure() && GITHUB.ref_name == 'main' }}
-  #   uses: ts-software-solutions/shared-workflows/.github/workflows/mule-deploy.yml@main
-  #   needs: [Deploy-To-Dev, Deploy-To-UAT]
-  #   secrets: inherit
-  #   with:
-  #     tag-name: ${{ inputs.tag }} 
-  #     mule-env: ${{ inputs.prod-env }}
-  #     anypoint-org-name: ${{ inputs.anypoint-org-name }}
-  #     mule-deploy-args: ${{ inputs.mule-deploy-args }}
-
-    Deploy-To-Prod:
+  Deploy-To-Prod:
     if: ${{ !cancelled() && !failure() && GITHUB.ref_name == 'main' }}
-    runs-on: ubuntu-latest
-    outputs:
-      released-version: ${{ steps.version.outputs.VERSION_OUTPUT }} 
-    environment: ${{ inputs.mule-env }}
-    steps:
-    - name: echo something encouraging
-      run: echo You deployed to prod yayay
+    uses: ts-software-solutions/shared-workflows/.github/workflows/mule-deploy.yml@main
+    needs: [Deploy-To-Dev, Deploy-To-UAT]
+    secrets: inherit
+    with:
+      tag-name: ${{ inputs.tag }} 
+      mule-env: ${{ inputs.prod-env }}
+      anypoint-org-name: ${{ inputs.anypoint-org-name }}
+      mule-deploy-args: ${{ inputs.mule-deploy-args }}
 
   Post-Release:
     if: ${{ !cancelled() &&  !failure() && GITHUB.ref_name == 'main' && GITHUB.event_name == 'push' && needs.Build-And-Publish.result == 'success' && needs.Deploy-to-PROD.result == 'success' }}
