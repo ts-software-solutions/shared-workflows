@@ -48,10 +48,6 @@ jobs:
         ref: ${{ GITHUB.ref }}
         token: ${{ secrets.GITHUB_TOKEN }}
     
-    - uses: actions/download-artifact@v4
-      with:
-        name: mule-deploy
-    
     # Setup java and maven settings
     - name: Set up JDK 8
       uses: actions/setup-java@v4
