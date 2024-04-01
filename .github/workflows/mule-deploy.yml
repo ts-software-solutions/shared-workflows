@@ -88,21 +88,24 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-
-    - name: Deploy To specified environment based on profile
+    - name: SKipping deployment
       run: |
-        mvn mule-deploy:deploy \
-        -DmuleDeploy.env=${{ inputs.mule-env }} \
-        -DmuleDeploy.environmentProperty=${{ inputs.mule-env }} \
-        -DmuleDeploy.appArtifact=${{ steps.get_paths.outputs.JAR_FILE }} \
-        -Danypoint.connected-app.id=${{ secrets.MULE_CLIENT_ID }} \
-        -Danypoint.connected-app.secret=${{ secrets.MULE_CLIENT_SECRET }} \
-        -DmuleDeploy.cryptoKey=${{ secrets.MULE_CRYPTO_KEY }} \
-        -DmuleDeploy.autoDiscClientId=${{ secrets.ANYPOINT_CLIENT_ID }} \
-        -DmuleDeploy.autoDiscClientSecret=${{ secrets.ANYPOINT_CLIENT_SECRET }} \
-        "-DmuleDeploy.workerType=${{ vars.WORKER_SIZE }}" \
-        "-DmuleDeploy.workerCount=${{ vars.WORKER_COUNT }}" \
-        "-DmuleDeploy.region=${{ vars.REGION }}" \
-        "-Danypoint.org.name=${{ inputs.anypoint-org-name }}" \
-        $(cat tmp.txt)
+        echo you deployed trust me
+
+    # - name: Deploy To specified environment based on profile
+    #   run: |
+    #     mvn mule-deploy:deploy \
+    #     -DmuleDeploy.env=${{ inputs.mule-env }} \
+    #     -DmuleDeploy.environmentProperty=${{ inputs.mule-env }} \
+    #     -DmuleDeploy.appArtifact=${{ steps.get_paths.outputs.JAR_FILE }} \
+    #     -Danypoint.connected-app.id=${{ secrets.MULE_CLIENT_ID }} \
+    #     -Danypoint.connected-app.secret=${{ secrets.MULE_CLIENT_SECRET }} \
+    #     -DmuleDeploy.cryptoKey=${{ secrets.MULE_CRYPTO_KEY }} \
+    #     -DmuleDeploy.autoDiscClientId=${{ secrets.ANYPOINT_CLIENT_ID }} \
+    #     -DmuleDeploy.autoDiscClientSecret=${{ secrets.ANYPOINT_CLIENT_SECRET }} \
+    #     "-DmuleDeploy.workerType=${{ vars.WORKER_SIZE }}" \
+    #     "-DmuleDeploy.workerCount=${{ vars.WORKER_COUNT }}" \
+    #     "-DmuleDeploy.region=${{ vars.REGION }}" \
+    #     "-Danypoint.org.name=${{ inputs.anypoint-org-name }}" \
+    #     ${{ inputs.mule-deploy-args }}
 
