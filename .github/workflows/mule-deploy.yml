@@ -64,10 +64,6 @@ jobs:
         zipBall: true
         extract: true
         token: ${{ secrets.GITHUB_TOKEN }}
-    
-    - uses: actions/download-artifact@v4
-      with:
-        name: mule-deploy
 
     - name: Get paths to source code and jar and list directory contents
       id: get_paths
