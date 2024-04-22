@@ -1,4 +1,4 @@
-name: Relase to aviconsulting Terraform Registry
+name: I created this for test purposes only
 
 on:
   workflow_dispatch:
@@ -29,4 +29,4 @@ jobs:
           arch=arm64
           BINARY=$(echo "11f84edda4c5c4add7f9c876e61ecd3ff322ce5b25cb80dbca288e4feffbc878  terraform-provider-apm_v0.0.1_darwin_arm64.zip" | grep ".*$os_$arch.*")
           IFS='   '
-          read -r SHA FILE_NAME <<< "$BINARY"
+          read -r SHA FILE_NAME <<< "$BINARY" 
