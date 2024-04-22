@@ -26,8 +26,9 @@ jobs:
       - name: List all files
         run: |
           ls -la
-          unzip shared-workflows-v${{ inputs.version-number }}.zip -d source_code
-          ls -la source_code
+          unzip shared-workflows-v${{ inputs.version-number }}.zip
+          mv $(ls -d */) source_code
+          ls source_code
 
       - name: read testing
         run: |
