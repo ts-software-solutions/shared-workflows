@@ -23,6 +23,20 @@ jobs:
           npm install -g newman
           newman --version
 
+      - name: Get Release files from release
+        uses: robinraju/release-downloader@v1.8
+        with: 
+          tag: "v${{ inputs.version-number}}"
+          fileName: "*"
+          tarBall: false
+          zipBall: true
+          extract: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List all files
+        run: |
+          ls -la
+
       - name: read testing
         run: |
           os=darwin
@@ -30,3 +44,5 @@ jobs:
           BINARY=$(echo "11f84edda4c5c4add7f9c876e61ecd3ff322ce5b25cb80dbca288e4feffbc878  terraform-provider-apm_v0.0.1_darwin_arm64.zip" | grep ".*$os_$arch.*")
           IFS='   '
           read -r SHA FILE_NAME <<< "$BINARY" 
+          echo "SHA: $SHA"
+          echo "FILE_NAME: $FILE_NAME"
