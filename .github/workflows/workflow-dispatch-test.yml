@@ -1,0 +1,32 @@
+name: Relase to aviconsulting Terraform Registry
+
+on:
+  workflow_dispatch:
+    inputs:
+      version-number:
+        type: string
+        description: The version you would like to add to the avioconsulting registry e.g. 1.0.4222401
+
+jobs:
+  things-to-test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.7.3
+      
+      - name: Install Newman CLI
+        run: |
+          npm install -g newman
+          newman --version
+
+      - name: read testing
+        run: |
+          os=darwin
+          arch=arm64
+          BINARY=$(echo "11f84edda4c5c4add7f9c876e61ecd3ff322ce5b25cb80dbca288e4feffbc878  terraform-provider-apm_v0.0.1_darwin_arm64.zip" | grep ".*$os_$arch.*")
+          IFS='   '
+          read -r SHA FILE_NAME <<< "$BINARY"
