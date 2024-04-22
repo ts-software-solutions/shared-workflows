@@ -13,16 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 21.7.3
-      
-      - name: Install Newman CLI
-        run: |
-          npm install -g newman
-          newman --version
-
       - name: Get Release files from release
         uses: robinraju/release-downloader@v1.8
         with: 
@@ -36,6 +26,8 @@ jobs:
       - name: List all files
         run: |
           ls -la
+          unzip shared-workflows-v${{ inputs.version-number }}.zip -d source_code
+          ls -la source_code
 
       - name: read testing
         run: |
